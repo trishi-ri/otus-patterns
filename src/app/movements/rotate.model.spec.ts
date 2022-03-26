@@ -1,40 +1,34 @@
 import { Direction } from '../core/direction.model';
 import { Rotatable, Rotate } from './rotate.model';
-
-class MockRotatable implements Rotatable {
-  get direction(): Direction {
-    throw new Error('Method not implemented.');
-  }
-  set direction(_: Direction) {
-    throw new Error('Method not implemented.');
-  }
-  get angularVelocity(): number {
-    throw new Error('Method not implemented.');
-  }
-}
+import { anything, capture, instance, mock, when } from 'ts-mockito';
 
 describe('Rotate', () => {
+  let mockedRotatable: Rotatable;
+  let rotatable: Rotatable;
+
+  beforeEach(() => {
+    mockedRotatable = mock<Rotatable>();
+    rotatable = instance(mockedRotatable);
+  });
+
   describe('execute', () => {
     it('поворот с направления (15, 360) на угол 30 => будет установлено новое направление (45, 360)', () => {
-      const rotatable = new MockRotatable();
-      spyOnProperty(rotatable, 'direction', 'get').and.callFake(() => new Direction(15, 360));
-      spyOnProperty(rotatable, 'angularVelocity', 'get').and.callFake(() => 30);
-      const setDirectionSpy = spyOnProperty(rotatable, 'direction', 'set').and.callFake(() => {});
+      when(mockedRotatable.getDirection()).thenReturn(new Direction(15, 360));
+      when(mockedRotatable.getAngularVelocity()).thenReturn(30);
 
       const rotate = new Rotate(rotatable);
       rotate.execute();
 
-      expect(setDirectionSpy).toHaveBeenCalledWith(new Direction(45, 360));
+      const [newDirection] = capture(mockedRotatable.setDirection).last();
+      expect(newDirection).toEqual(new Direction(45, 360));
     });
 
     describe('исключения', () => {
       it('при выполнении поворота не удалось получить направление => исключение "невозможно определить исходное направление"', () => {
-        const rotatable = new MockRotatable();
-        spyOnProperty(rotatable, 'direction', 'get').and.callFake(() => {
-          throw new Error('невозможно определить исходное направление');
-        });
-        spyOnProperty(rotatable, 'angularVelocity', 'get').and.callFake(() => 0);
-        spyOnProperty(rotatable, 'direction', 'set').and.callFake(() => {});
+        when(mockedRotatable.getDirection()).thenThrow(
+          new Error('невозможно определить исходное направление'),
+        );
+        when(mockedRotatable.getAngularVelocity()).thenReturn(30);
 
         const rotate = new Rotate(rotatable);
 
@@ -42,12 +36,10 @@ describe('Rotate', () => {
       });
 
       it('при выполнении поворота не удалось получить угловую скорость => исключение "невозможно определить угловую скорость"', () => {
-        const rotatable = new MockRotatable();
-        spyOnProperty(rotatable, 'direction', 'get').and.callFake(() => new Direction(0, 360));
-        spyOnProperty(rotatable, 'angularVelocity', 'get').and.callFake(() => {
-          throw new Error('невозможно определить угловую скорость');
-        });
-        spyOnProperty(rotatable, 'direction', 'set').and.callFake(() => {});
+        when(mockedRotatable.getDirection()).thenReturn(new Direction(15, 360));
+        when(mockedRotatable.getAngularVelocity()).thenThrow(
+          new Error('невозможно определить угловую скорость'),
+        );
 
         const rotate = new Rotate(rotatable);
 
@@ -55,12 +47,11 @@ describe('Rotate', () => {
       });
 
       it('при выполнении поворота не удалось установить новое направление => исключение "невозможно изменить направление"', () => {
-        const rotatable = new MockRotatable();
-        spyOnProperty(rotatable, 'direction', 'get').and.callFake(() => new Direction(0, 360));
-        spyOnProperty(rotatable, 'angularVelocity', 'get').and.callFake(() => 0);
-        spyOnProperty(rotatable, 'direction', 'set').and.callFake(() => {
-          throw new Error('невозможно изменить направление');
-        });
+        when(mockedRotatable.getDirection()).thenReturn(new Direction(15, 360));
+        when(mockedRotatable.getAngularVelocity()).thenReturn(30);
+        when(mockedRotatable.setDirection(anything())).thenThrow(
+          new Error('невозможно изменить направление'),
+        );
 
         const rotate = new Rotate(rotatable);
 

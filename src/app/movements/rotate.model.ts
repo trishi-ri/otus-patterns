@@ -9,7 +9,9 @@ export class Rotate {
 
   public execute(): void {
     try {
-      this.rotatable.direction = this.rotatable.direction.next(this.rotatable.angularVelocity);
+      this.rotatable.setDirection(
+        this.rotatable.getDirection().next(this.rotatable.getAngularVelocity()),
+      );
     } catch (e) {
       throw e;
     }
@@ -17,8 +19,8 @@ export class Rotate {
 }
 
 export interface Rotatable {
-  get direction(): Direction;
-  set direction(newDirection: Direction);
+  getDirection(): Direction;
+  setDirection(newDirection: Direction): void;
 
-  get angularVelocity(): number;
+  getAngularVelocity(): number;
 }
