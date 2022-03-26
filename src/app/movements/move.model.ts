@@ -9,7 +9,7 @@ export class Move {
 
   public execute(): void {
     try {
-      this.movable.position = Vector.plus(this.movable.position, this.movable.velocity);
+      this.movable.setPosition(Vector.plus(this.movable.getPosition(), this.movable.getVelocity()));
     } catch (e) {
       throw e;
     }
@@ -17,8 +17,8 @@ export class Move {
 }
 
 export interface Movable {
-  get position(): Vector;
-  set position(newPosition: Vector);
+  getPosition(): Vector;
+  setPosition(newPosition: Vector): Vector;
 
-  get velocity(): Vector;
+  getVelocity(): Vector;
 }
