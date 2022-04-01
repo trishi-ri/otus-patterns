@@ -1,7 +1,7 @@
 import { Command } from '../core/command.model';
 import { Direction } from '../core/direction.model';
 
-export class Rotate implements Command {
+export class RotateCommand implements Command {
   private rotatable: Rotatable;
 
   constructor(rotatable: Rotatable) {

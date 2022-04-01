@@ -1,8 +1,8 @@
 import { Direction } from '../core/direction.model';
-import { Rotatable, Rotate } from './rotate.model';
+import { Rotatable, RotateCommand } from './rotate.model';
 import { anything, capture, instance, mock, when } from 'ts-mockito';
 
-describe('Rotate', () => {
+describe('RotateCommand', () => {
   let mockedRotatable: Rotatable;
   let rotatable: Rotatable;
 
@@ -16,7 +16,7 @@ describe('Rotate', () => {
       when(mockedRotatable.getDirection()).thenReturn(new Direction(15, 360));
       when(mockedRotatable.getAngularVelocity()).thenReturn(30);
 
-      const rotate = new Rotate(rotatable);
+      const rotate = new RotateCommand(rotatable);
       rotate.execute();
 
       const [newDirection] = capture(mockedRotatable.setDirection).last();
@@ -30,7 +30,7 @@ describe('Rotate', () => {
         );
         when(mockedRotatable.getAngularVelocity()).thenReturn(30);
 
-        const rotate = new Rotate(rotatable);
+        const rotate = new RotateCommand(rotatable);
 
         expect(() => rotate.execute()).toThrowError('невозможно определить исходное направление');
       });
@@ -41,7 +41,7 @@ describe('Rotate', () => {
           new Error('невозможно определить угловую скорость'),
         );
 
-        const rotate = new Rotate(rotatable);
+        const rotate = new RotateCommand(rotatable);
 
         expect(() => rotate.execute()).toThrowError('невозможно определить угловую скорость');
       });
@@ -53,7 +53,7 @@ describe('Rotate', () => {
           new Error('невозможно изменить направление'),
         );
 
-        const rotate = new Rotate(rotatable);
+        const rotate = new RotateCommand(rotatable);
 
         expect(() => rotate.execute()).toThrowError('невозможно изменить направление');
       });

@@ -1,7 +1,7 @@
 import { Command } from '../core/command.model';
 import { Vector } from '../core/vector.model';
 
-export class Move implements Command {
+export class MoveCommand implements Command {
   private movable: Movable;
 
   constructor(movable: Movable) {
