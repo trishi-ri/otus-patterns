@@ -25,8 +25,8 @@ export class QueueExceptionHandler implements ExceptionHandler {
     (error: Error, command: Command, queue$: Subject<Command>) => void
   > {
     return {
-      ['ErrorMove']: (e, _, q$) => q$.next(new LogError(e)),
-      ['ErrorRotate']: (_, c, q$) => q$.next(new RepeatCommand(c)),
+      ['ErrorMoveCommand']: (e, _, q$) => q$.next(new LogError(e)),
+      ['ErrorRotateCommand']: (_, c, q$) => q$.next(new RepeatCommand(c)),
       ['ErrorRepeatCommand']: (e, _, q$) => q$.next(new LogError(e)),
       ['RangeErrorRepeatCommand']: (_, c, q$) => q$.next(new RepeatTwiceCommand(c)),
       ['ErrorRepeatTwiceCommand']: (e, _, q$) => q$.next(new LogError(e)),

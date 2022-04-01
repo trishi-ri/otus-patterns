@@ -1,8 +1,8 @@
 import { Subject } from 'rxjs';
 import { mock, instance, when, anything, verify, spy, capture, resetCalls } from 'ts-mockito';
 import { Command } from '../core/command.model';
-import { Movable, Move } from '../movements/move.model';
-import { Rotatable, Rotate } from '../movements/rotate.model';
+import { Movable, MoveCommand } from '../movements/move.model';
+import { Rotatable, RotateCommand } from '../movements/rotate.model';
 import { QueueExceptionHandler } from './queue-exception-handler.model';
 
 describe('QueueExceptionHandler', () => {
@@ -28,7 +28,7 @@ describe('QueueExceptionHandler', () => {
     });
 
     it('ошибка при перемещении => при получении ошибки записать в лог', () => {
-      const spiedCommand = spy(new Move(mock<Movable>()));
+      const spiedCommand = spy(new MoveCommand(mock<Movable>()));
       when(spiedCommand.execute()).thenThrow(new Error('первая ошибка'));
 
       queue$.next(instance(spiedCommand));
@@ -41,7 +41,7 @@ describe('QueueExceptionHandler', () => {
     });
 
     it('ошибка при повороте => при получении ошибки повторить команду', () => {
-      const spiedCommand = spy(new Rotate(mock<Rotatable>()));
+      const spiedCommand = spy(new RotateCommand(mock<Rotatable>()));
       when(spiedCommand.execute())
         .thenThrow(new Error('первая ошибка'))
         .thenCall(() => {});
@@ -54,7 +54,7 @@ describe('QueueExceptionHandler', () => {
     });
 
     it('повторная ошибка при повтороте => при получении ошибки повторить команду, если снова ошибка, то записать в лог', () => {
-      const spiedCommand = spy(new Rotate(mock<Rotatable>()));
+      const spiedCommand = spy(new RotateCommand(mock<Rotatable>()));
       when(spiedCommand.execute())
         .thenThrow(new Error('первая ошибка'))
         .thenThrow(new Error('вторая ошибка'));
@@ -73,7 +73,7 @@ describe('QueueExceptionHandler', () => {
         'при получении ошибки повторить команду, если ошибка диапазона, то ещё раз повторить, ' +
         'если дважды ошибка, то записать в лог',
       () => {
-        const spiedCommand = spy(new Rotate(mock<Rotatable>()));
+        const spiedCommand = spy(new RotateCommand(mock<Rotatable>()));
         when(spiedCommand.execute())
           .thenThrow(new Error('первая ошибка'))
           .thenThrow(new RangeError('вторая ошибка'))

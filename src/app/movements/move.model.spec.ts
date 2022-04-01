@@ -1,8 +1,8 @@
-import { Movable, Move } from './move.model';
+import { Movable, MoveCommand } from './move.model';
 import { Vector } from '../core/vector.model';
 import { anything, capture, instance, mock, when } from 'ts-mockito';
 
-describe('Move', () => {
+describe('MoveCommand', () => {
   let mockedMovable: Movable;
   let movable: Movable;
 
@@ -16,7 +16,7 @@ describe('Move', () => {
       when(mockedMovable.getPosition()).thenReturn(new Vector(12, 5));
       when(mockedMovable.getVelocity()).thenReturn(new Vector(-7, 3));
 
-      const move = new Move(movable);
+      const move = new MoveCommand(movable);
       move.execute();
 
       const [newVector] = capture(mockedMovable.setPosition).last();
@@ -30,7 +30,7 @@ describe('Move', () => {
         );
         when(mockedMovable.getVelocity()).thenReturn(new Vector(-7, 3));
 
-        const move = new Move(movable);
+        const move = new MoveCommand(movable);
 
         expect(() => move.execute()).toThrowError('невозможно определить исходную позицию');
       });
@@ -39,7 +39,7 @@ describe('Move', () => {
         when(mockedMovable.getPosition()).thenReturn(new Vector(12, 5));
         when(mockedMovable.getVelocity()).thenThrow(new Error('невозможно определить скорость'));
 
-        const move = new Move(movable);
+        const move = new MoveCommand(movable);
 
         expect(() => move.execute()).toThrowError('невозможно определить скорость');
       });
@@ -51,7 +51,7 @@ describe('Move', () => {
           new Error('невозможно изменить положение в пространстве'),
         );
 
-        const move = new Move(movable);
+        const move = new MoveCommand(movable);
 
         expect(() => move.execute()).toThrowError('невозможно изменить положение в пространстве');
       });
