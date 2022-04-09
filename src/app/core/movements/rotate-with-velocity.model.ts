@@ -1,4 +1,4 @@
-import { MacroCommand } from '../core/macro-command.model';
+import { MacroCommand } from '../macro-command.model';
 import { ChangeVelocityCommand, VelocityChangable } from './change-velocity.model';
 import { Rotatable, RotateCommand } from './rotate.model';
 

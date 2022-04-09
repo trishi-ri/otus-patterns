@@ -1,5 +1,5 @@
 import { Movable, MoveCommand } from './move.model';
-import { Vector } from '../core/vector.model';
+import { Vector } from '../vector.model';
 import { anything, capture, instance, mock, when } from 'ts-mockito';
 
 describe('MoveCommand', () => {

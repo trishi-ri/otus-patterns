@@ -1,9 +1,9 @@
-import { MacroCommand } from '../core/macro-command.model';
+import { MacroCommand } from '../macro-command.model';
 import { BurnFuelCommand, FuelBurner } from './burn-fuel.model';
 import { CheckFuelCommand, FuelUser } from './check-fuel.model';
 import { Movable, MoveCommand } from './move.model';
 
-export class MoveForwardCommans extends MacroCommand {
+export class MoveForwardCommand extends MacroCommand {
   constructor(forwardMovable: ForwardMovable) {
     super([
       new CheckFuelCommand(forwardMovable),

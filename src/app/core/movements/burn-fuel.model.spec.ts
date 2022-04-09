@@ -1,7 +1,5 @@
 import { mock, instance, when, capture, anything } from 'ts-mockito';
-import { Vector } from '../core/vector.model';
 import { BurnFuelCommand, FuelBurner } from './burn-fuel.model';
-import { MoveCommand } from './move.model';
 
 describe('BurnFuelCommand', () => {
   let mockedFuelBurner: FuelBurner;

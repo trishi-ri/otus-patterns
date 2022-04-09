@@ -1,5 +1,5 @@
 import { Subject } from 'rxjs';
-import { Command } from '../core/command.model';
+import { Command } from '../command.model';
 import { ExceptionHandler } from './exception-handler.model';
 import { LogError } from './log-error.model';
 import { RepeatCommand, RepeatTwiceCommand } from './repeat-command.model';

@@ -1,6 +1,6 @@
 import { mock, instance, when, capture } from 'ts-mockito';
-import { Direction } from '../core/direction.model';
-import { Vector } from '../core/vector.model';
+import { Direction } from '../direction.model';
+import { Vector } from '../vector.model';
 import {
   RotatableWithVelocityChangable,
   RotateWithVelocityCommand,

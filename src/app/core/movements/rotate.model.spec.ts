@@ -1,4 +1,4 @@
-import { Direction } from '../core/direction.model';
+import { Direction } from '../direction.model';
 import { Rotatable, RotateCommand } from './rotate.model';
 import { anything, capture, instance, mock, when } from 'ts-mockito';
 
