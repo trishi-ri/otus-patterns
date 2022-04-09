@@ -1,4 +1,4 @@
-import { Command } from '../core/command.model';
+import { Command } from '../command.model';
 
 export class BurnFuelCommand implements Command {
   private fuelBurner: FuelBurner;

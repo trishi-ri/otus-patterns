@@ -1,5 +1,5 @@
 import { instance, mock, verify } from 'ts-mockito';
-import { Command } from '../core/command.model';
+import { Command } from '../command.model';
 import { RepeatCommand } from './repeat-command.model';
 
 describe('RepeatCommand', () => {

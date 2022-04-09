@@ -1,6 +1,6 @@
 import { Subject } from 'rxjs';
 import { mock, instance, when, anything, verify, spy, capture, resetCalls } from 'ts-mockito';
-import { Command } from '../core/command.model';
+import { Command } from '../command.model';
 import { Movable, MoveCommand } from '../movements/move.model';
 import { Rotatable, RotateCommand } from '../movements/rotate.model';
 import { QueueExceptionHandler } from './queue-exception-handler.model';

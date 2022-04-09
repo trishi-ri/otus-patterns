@@ -1,6 +1,6 @@
 import { instance, mock, spy, verify, when } from 'ts-mockito';
-import { Movable, MoveCommand } from '../movements/move.model';
-import { Rotatable, RotateCommand } from '../movements/rotate.model';
+import { Movable, MoveCommand } from './movements/move.model';
+import { Rotatable, RotateCommand } from './movements/rotate.model';
 import { MacroCommand } from './macro-command.model';
 
 describe('MacroCommand', () => {

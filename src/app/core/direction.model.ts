@@ -1,5 +1,3 @@
-import { MathUtils } from '../utils/math.utils';
-
 export class Direction {
   private _direction: number;
   private _directionNumbers: number;

@@ -1,5 +1,5 @@
-import { Command } from '../core/command.model';
-import { Direction } from '../core/direction.model';
+import { Command } from '../command.model';
+import { Direction } from '../direction.model';
 
 export class RotateCommand implements Command {
   private rotatable: Rotatable;

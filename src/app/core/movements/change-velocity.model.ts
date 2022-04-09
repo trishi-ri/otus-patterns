@@ -1,6 +1,6 @@
-import { Command } from '../core/command.model';
-import { Direction } from '../core/direction.model';
-import { Vector } from '../core/vector.model';
+import { Command } from '../command.model';
+import { Direction } from '../direction.model';
+import { Vector } from '../vector.model';
 
 export class ChangeVelocityCommand implements Command {
   private velocityChangable: VelocityChangable;

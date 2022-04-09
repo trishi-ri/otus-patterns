@@ -1,5 +1,5 @@
-import { Command } from '../core/command.model';
-import { Vector } from '../core/vector.model';
+import { Command } from '../command.model';
+import { Vector } from '../vector.model';
 
 export class MoveCommand implements Command {
   private movable: Movable;

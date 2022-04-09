@@ -1,6 +1,6 @@
 import { mock, instance, when, capture, anything } from 'ts-mockito';
-import { Direction } from '../core/direction.model';
-import { Vector } from '../core/vector.model';
+import { Direction } from '../direction.model';
+import { Vector } from '../vector.model';
 import { VelocityChangable, ChangeVelocityCommand } from './change-velocity.model';
 
 describe('ChangeVelocityCommand', () => {

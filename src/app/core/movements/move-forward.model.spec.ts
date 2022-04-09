@@ -1,6 +1,6 @@
 import { mock, instance, capture, when } from 'ts-mockito';
-import { Vector } from '../core/vector.model';
-import { ForwardMovable, MoveForwardCommans } from './move-forward.model';
+import { Vector } from '../vector.model';
+import { ForwardMovable, MoveForwardCommand } from './move-forward.model';
 
 describe('MoveForwardCommand', () => {
   let mockedForwardMovable: ForwardMovable;
@@ -22,7 +22,7 @@ describe('MoveForwardCommand', () => {
         when(mockedForwardMovable.getPosition()).thenReturn(new Vector(1, 2));
         when(mockedForwardMovable.getVelocity()).thenReturn(new Vector(5, 3));
 
-        const moveForward = new MoveForwardCommans(forwardMovable);
+        const moveForward = new MoveForwardCommand(forwardMovable);
         moveForward.execute();
 
         const [newVector] = capture(mockedForwardMovable.setPosition).last();
