@@ -1,10 +1,7 @@
 import { Command } from '../command.model';
 
 export class CheckFuelCommand implements Command {
-  private fuelUser: FuelUser;
-  constructor(fuelUser: FuelUser) {
-    this.fuelUser = fuelUser;
-  }
+  constructor(private fuelUser: FuelUser) {}
 
   public execute(): void {
     try {

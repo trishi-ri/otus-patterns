@@ -5,11 +5,7 @@ import { LogError } from './log-error.model';
 import { RepeatCommand, RepeatTwiceCommand } from './repeat-command.model';
 
 export class QueueExceptionHandler implements ExceptionHandler {
-  private queue$: Subject<Command>;
-
-  constructor(queue$: Subject<Command>) {
-    this.queue$ = queue$;
-  }
+  constructor(private queue$: Subject<Command>) {}
 
   public handle(error: Error, command: Command): void {
     const key = this.getKeyForStrategy(error, command);

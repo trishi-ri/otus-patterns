@@ -1,6 +1,6 @@
 import { finalize, of } from 'rxjs';
 import { Command } from '../command.model';
-import { IoCContainer } from './ico-container.model';
+import { IoCContainer } from './ioc-container.model';
 
 describe('IoCContainer', () => {
   let IoC: IoCContainer;

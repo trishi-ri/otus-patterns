@@ -2,8 +2,9 @@ import { Command } from '../command.model';
 import { IoC } from './ioc.model';
 import { IoCScope } from './scope.model';
 
+type IoCKey = 'IoC.Register' | 'Scope.New' | 'Scope.Current' | string;
 type IoCValue = (...args: unknown[]) => unknown;
-export type IoCValues = Record<string, IoCValue>;
+export type IoCValues = Record<IoCKey, IoCValue>;
 
 export class IoCContainer implements IoC {
   private scopes: Record<string, IoCScope>;
@@ -16,7 +17,7 @@ export class IoCContainer implements IoC {
     this.currentScope = this.scopes['default'];
   }
 
-  resolve<T>(key: string, ...args: unknown[]): T {
+  resolve<T>(key: IoCKey, ...args: unknown[]): T {
     try {
       return this.getValue(key)(...args) as T;
     } catch (e) {
@@ -36,7 +37,7 @@ export class IoCContainer implements IoC {
     return this.currentScope.name;
   }
 
-  private getValue(key: string, scope?: IoCScope): IoCValue {
+  private getValue(key: IoCKey, scope?: IoCScope): IoCValue {
     const scopeForSearch = scope ?? this.currentScope;
     const value = scopeForSearch.values[key];
 
@@ -59,7 +60,7 @@ export class IoCContainer implements IoC {
     return new IoCScope('default', {
       'IoC.Register': (key, fn) =>
         ({
-          execute: () => (this.values[key as string] = fn as IoCValue),
+          execute: () => (this.values[key as IoCKey] = fn as IoCValue),
         } as Command),
       'Scope.New': (name) =>
         ({

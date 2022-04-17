@@ -1,11 +1,7 @@
 import { Command } from '../command.model';
 
 export class LogError implements Command {
-  private error: Error;
-
-  constructor(error: Error) {
-    this.error = error;
-  }
+  constructor(private error: Error) {}
 
   execute(): void {
     console.log(this.error);

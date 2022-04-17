@@ -1,11 +1,7 @@
 import { Command } from '../command.model';
 
 export class RepeatCommand implements Command {
-  private command: Command;
-
-  constructor(command: Command) {
-    this.command = command;
-  }
+  constructor(private command: Command) {}
 
   execute(): void {
     this.command.execute();

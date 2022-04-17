@@ -2,11 +2,7 @@ import { Command } from '../command.model';
 import { Vector } from '../vector.model';
 
 export class MoveCommand implements Command {
-  private movable: Movable;
-
-  constructor(movable: Movable) {
-    this.movable = movable;
-  }
+  constructor(private movable: Movable) {}
 
   public execute(): void {
     try {
@@ -19,7 +15,7 @@ export class MoveCommand implements Command {
 
 export interface Movable {
   getPosition(): Vector;
-  setPosition(newPosition: Vector): Vector;
+  setPosition(newPosition: Vector): void;
 
   getVelocity(): Vector;
 }
