@@ -3,11 +3,7 @@ import { Direction } from '../direction.model';
 import { Vector } from '../vector.model';
 
 export class ChangeVelocityCommand implements Command {
-  private velocityChangable: VelocityChangable;
-
-  constructor(velocityChangable: VelocityChangable) {
-    this.velocityChangable = velocityChangable;
-  }
+  constructor(private velocityChangable: VelocityChangable) {}
 
   execute(): void {
     const currentDurection = this.velocityChangable.getDirection();

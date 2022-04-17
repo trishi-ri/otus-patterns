@@ -1,11 +1,7 @@
 import { Command } from '../command.model';
 
 export class BurnFuelCommand implements Command {
-  private fuelBurner: FuelBurner;
-
-  constructor(fuelBurner: FuelBurner) {
-    this.fuelBurner = fuelBurner;
-  }
+  constructor(private fuelBurner: FuelBurner) {}
 
   public execute(): void {
     try {

@@ -1,20 +1,14 @@
 export class Direction {
-  private _direction: number;
-  private _directionNumbers: number;
-
-  constructor(direction: number, directionNumbers: number) {
-    if (!Number.isInteger(direction)) {
+  constructor(private _direction: number, private _directionNumbers: number) {
+    if (!Number.isInteger(this._direction)) {
       throw new Error('направление должно быть целым числом');
     }
-    if (!Number.isInteger(directionNumbers)) {
+    if (!Number.isInteger(this.directionNumbers)) {
       throw new Error('количество направлений должно быть целым числом');
     }
-    if (directionNumbers === 0) {
+    if (this.directionNumbers === 0) {
       throw new Error('количество направлений не должно быть 0');
     }
-
-    this._direction = direction;
-    this._directionNumbers = directionNumbers;
   }
 
   public get direction(): number {

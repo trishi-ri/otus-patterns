@@ -1,11 +1,7 @@
 import { Command } from './command.model';
 
 export class MacroCommand implements Command {
-  private commands: Command[];
-
-  constructor(commands: Command[]) {
-    this.commands = commands;
-  }
+  constructor(private commands: Command[]) {}
 
   public execute(): void {
     try {

@@ -2,11 +2,7 @@ import { Command } from '../command.model';
 import { Direction } from '../direction.model';
 
 export class RotateCommand implements Command {
-  private rotatable: Rotatable;
-
-  constructor(rotatable: Rotatable) {
-    this.rotatable = rotatable;
-  }
+  constructor(private rotatable: Rotatable) {}
 
   public execute(): void {
     try {
