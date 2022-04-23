@@ -1,27 +1,21 @@
 import { capture, spy } from 'ts-mockito';
 import { IoC } from '../app.config';
-import { Adapter, MetaData } from './adapter.model';
+import { AdapterUtils, MetaData } from './adapter.model';
 import { Command } from './command.model';
 import { Movable, MoveCommand } from './movements/move.model';
 import { UObject } from './u-object.model';
 import { Vector } from './vector.model';
 
 describe('adapters', () => {
-  IoC.resolve<Command>('IoC.Register', 'Adapter', <T>(uObject: UObject, metadata: MetaData<T>) => {
-    return new Adapter<T>(uObject, metadata) as unknown;
+  IoC.resolve<Command>('IoC.Register', 'Adapter', <T>(interfaceName: string, uObject: UObject) => {
+    const metadata = IoC.resolve<MetaData<unknown>>(`${interfaceName}.Metadata`);
+    const adapter = eval(AdapterUtils.getClassDefenition(metadata));
+    return new adapter(uObject, IoC);
   }).execute();
 
   it('генерация адаптера для Movable', () => {
-    IoC.resolve<Command>('IoC.Register', 'MovableAdapter', (uObject: UObject): Movable => {
-      const metadata: MetaData<Movable> = {
-        className: 'Movable',
-        methods: ['getPosition', 'getVelocity', 'setPosition'],
-      };
-      return IoC.resolve<Movable>('Adapter', uObject, metadata);
-    }).execute();
-
     const uObject: UObject = getUObject();
-    const adapter = IoC.resolve<Movable>('MovableAdapter', uObject);
+    const adapter = IoC.resolve<Movable>('Adapter', 'Movable', uObject);
 
     const move = new MoveCommand(adapter);
     move.execute();
@@ -30,25 +24,10 @@ describe('adapters', () => {
   });
 
   it('генерация адаптера для интерфейса с дополнительным методом (не геттер и не сеттер)', () => {
-    IoC.resolve<Command>(
-      'IoC.Register',
-      'IMovableWithFinishAdapter',
-      (uObject: UObject): MovableWithFinish => {
-        const metadata: MetaData<MovableWithFinish> = {
-          className: 'MovableWithFinish',
-          methods: ['getPosition', 'getVelocity', 'setPosition', 'finish'],
-          methodDefinitions: {
-            finish: () => console.log('finish!'),
-          },
-        };
-        return IoC.resolve<MovableWithFinish>('Adapter', uObject, metadata);
-      },
-    ).execute();
-
     const spiedConsole = spy(console);
 
     const uObject: UObject = getUObject();
-    const adapter = IoC.resolve<MovableWithFinish>('IMovableWithFinishAdapter', uObject);
+    const adapter = IoC.resolve<MovableWithFinish>('Adapter', 'MovableWithFinish', uObject);
     const finishCommand = new FinishCommand(adapter);
     finishCommand.execute();
 
@@ -76,6 +55,19 @@ interface MovableWithFinish {
   getVelocity(): Vector;
   finish(): void;
 }
+
+IoC.resolve<Command>(
+  'IoC.Register',
+  'MovableWithFinish.Metadata',
+  () =>
+    ({
+      className: 'MovableWithFinish',
+      methods: ['getPosition', 'getVelocity', 'setPosition', 'finish'],
+      methodDefinitions: {
+        finish: () => console.log('finish!'),
+      },
+    } as MetaData<MovableWithFinish>),
+).execute();
 
 class FinishCommand implements Command {
   constructor(private finishable: MovableWithFinish) {}

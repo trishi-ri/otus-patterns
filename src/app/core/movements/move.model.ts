@@ -1,3 +1,5 @@
+import { IoC } from 'src/app/app.config';
+import { MetaData } from '../adapter.model';
 import { Command } from '../command.model';
 import { Vector } from '../vector.model';
 
@@ -19,3 +21,13 @@ export interface Movable {
 
   getVelocity(): Vector;
 }
+
+IoC.resolve<Command>(
+  'IoC.Register',
+  'Movable.Metadata',
+  () =>
+    ({
+      className: 'Movable',
+      methods: ['getPosition', 'getVelocity', 'setPosition'],
+    } as MetaData<Movable>),
+).execute();
