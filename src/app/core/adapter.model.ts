@@ -10,21 +10,25 @@ export type MetaData<T> = {
   methodDefinitions?: Partial<T>;
 };
 
-export class AdapterUtils {
+export class Adapter {
   private static readonly getterRegExp = /^get(\w+)$/;
   private static readonly setterRegExp = /^set(\w+)$/;
 
-  public static getMethodDefenition<T>(
+  public static generateAdapter(interfaceName: string, uObject: UObject) {
+    const metadata = IoC.resolve<MetaData<unknown>>(`${interfaceName}.Metadata`);
+    const adapter = eval(Adapter.getClassDefenition(metadata));
+    return new adapter(uObject, IoC);
+  }
+
+  private static getMethodDefenition<T>(
     methodName: string,
     className: string,
     methodDefinitions?: Partial<T>,
   ): string {
-    const isGetter = AdapterUtils.getterRegExp.test(methodName);
-    const isSetter = AdapterUtils.setterRegExp.test(methodName);
+    const isGetter = Adapter.getterRegExp.test(methodName);
+    const isSetter = Adapter.setterRegExp.test(methodName);
     if (isGetter || isSetter) {
-      const match = methodName.match(
-        isGetter ? AdapterUtils.getterRegExp : AdapterUtils.setterRegExp,
-      );
+      const match = methodName.match(isGetter ? Adapter.getterRegExp : Adapter.setterRegExp);
       const property = match ? match[1] : methodName;
       if (isGetter) {
         const getterKey = `${className}:${property}.get`;
@@ -49,13 +53,13 @@ export class AdapterUtils {
     return '';
   }
 
-  public static getClassDefenition<T>(metadata: MetaData<T>): string {
+  private static getClassDefenition<T>(metadata: MetaData<T>): string {
     return `(class ${metadata.className}Adapter {
       uObject; IoC;
       constructor(uObject, IoC) {this.uObject = uObject;this.IoC = IoC;}
       ${(metadata.methods as string[])
         .map((name) => {
-          return AdapterUtils.getMethodDefenition<T>(
+          return Adapter.getMethodDefenition<T>(
             name,
             metadata.className,
             metadata.methodDefinitions,
