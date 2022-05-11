@@ -1,7 +1,6 @@
 import { IoC } from '../app.config';
 import { KeyofAsTuple } from '../types';
 import { Command } from './command.model';
-import { Movable } from './movements/move.model';
 import { UObject } from './u-object.model';
 
 export type MetaData<T> = {
