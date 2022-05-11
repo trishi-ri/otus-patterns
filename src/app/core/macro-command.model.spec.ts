@@ -13,7 +13,7 @@ describe('MacroCommand', () => {
 
     const macroCommand = new MacroCommand([
       instance(spiedRotateCommand),
-      new MoveCommand(instance(mock<Movable>())),
+      instance(spiedMoveCommand),
     ]);
 
     expect(() => macroCommand.execute()).toThrowError('ошибка первой команды');

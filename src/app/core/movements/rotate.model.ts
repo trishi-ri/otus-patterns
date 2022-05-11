@@ -1,3 +1,5 @@
+import { IoC } from 'src/app/app.config';
+import { MetaData } from '../adapter.model';
 import { Command } from '../command.model';
 import { Direction } from '../direction.model';
 
@@ -21,3 +23,13 @@ export interface Rotatable {
 
   getAngularVelocity(): number;
 }
+
+IoC.resolve<Command>(
+  'IoC.Register',
+  'Rotatable.Metadata',
+  () =>
+    ({
+      className: 'Rotatable',
+      methods: ['getDirection', 'setDirection', 'getAngularVelocity'],
+    } as MetaData<Rotatable>),
+).execute();

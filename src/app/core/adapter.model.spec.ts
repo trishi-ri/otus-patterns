@@ -1,16 +1,12 @@
 import { capture, spy } from 'ts-mockito';
 import { IoC } from '../app.config';
-import { Adapter, MetaData } from './adapter.model';
+import { MetaData } from './adapter.model';
 import { Command } from './command.model';
 import { Movable, MoveCommand } from './movements/move.model';
 import { UObject } from './u-object.model';
 import { Vector } from './vector.model';
 
 describe('adapters', () => {
-  IoC.resolve<Command>('IoC.Register', 'Adapter', (interfaceName: string, uObject: UObject) =>
-    Adapter.generateAdapter(interfaceName, uObject),
-  ).execute();
-
   it('генерация адаптера для Movable', () => {
     const uObject: UObject = getUObject();
     const adapter = IoC.resolve<Movable>('Adapter', 'Movable', uObject);
