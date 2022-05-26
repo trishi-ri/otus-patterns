@@ -212,4 +212,14 @@ describe('MathUtils', () => {
       });
     });
   });
+
+  it('randomId', () => {
+    const randomIds = Array(3)
+      .fill(undefined)
+      .map(() => MathUtils.randomId);
+
+    expect(
+      randomIds.every((randomId) => randomIds.filter((id) => id === randomId).length === 1),
+    ).toBeTrue();
+  });
 });
