@@ -62,4 +62,8 @@ export class MathUtils {
       Number.MIN_SAFE_INTEGER,
     ].includes(value);
   }
+
+  public static get randomId(): number {
+    return Number(`${Math.random()}`.split('.')[1]);
+  }
 }
