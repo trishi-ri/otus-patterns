@@ -12,7 +12,7 @@ describe('IoCContainer', () => {
   it('регистрация зависимостей', () => {
     IoC.resolve<Command>('IoC.Register', 'MaxUsers', () => 100).execute();
 
-    expect(IoC.keys).toEqual(['IoC.Register', 'Scope.New', 'Scope.Current', 'MaxUsers']);
+    expect(IoC.keys).toEqual(['IoC.Register', 'Scope.New', 'Scope.Current', 'Adapter', 'MaxUsers']);
   });
 
   it('разрешение зависимостей', () => {
