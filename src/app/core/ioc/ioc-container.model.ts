@@ -1,4 +1,6 @@
+import { Adapter } from '../adapter.model';
 import { Command } from '../command.model';
+import { UObject } from '../u-object.model';
 import { IoC } from './ioc.model';
 import { IoCScope } from './scope.model';
 
@@ -77,6 +79,8 @@ export class IoCContainer implements IoC {
             this.currentScope = scope;
           },
         } as Command),
+      Adapter: (interfaceName, uObject) =>
+        Adapter.generateAdapter(interfaceName as string, uObject as UObject),
     });
   }
 }
