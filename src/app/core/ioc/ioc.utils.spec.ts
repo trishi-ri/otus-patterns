@@ -14,10 +14,32 @@ describe('IoCUtils', () => {
       IoC.resolve<Command>('Scope.New', newScopeName).execute();
 
       const testKey = 'One';
-      const errors = IoCUtils.tryInScope(newScopeName, () => {
+      const result = IoCUtils.tryInScope(newScopeName, () => {
         IoC.resolve<Command>('IoC.Register', testKey, (): number => 1).execute();
       });
-      expect(errors).toEqual([]);
+      expect(result).toEqual(undefined);
+
+      expect(IoC.scopeName).toBe(initScopeName);
+      expect(() => IoC.resolve<number>(testKey)).toThrowError(
+        `не удалось найти значение по ключу "${testKey}"`,
+      );
+      expect(IoC.keys.includes(testKey)).toBe(false);
+
+      IoC.resolve<Command>('Scope.Current', newScopeName).execute();
+      expect(IoC.resolve<number>(testKey)).toBe(1);
+      expect(IoC.keys.includes(testKey)).toBe(true);
+    });
+
+    it('переданная функция выполнится внутри скоупа с указанным именем и вернёт значение, а затем скоуп вернётся к предыдущему', () => {
+      const newScopeName = `${MathUtils.randomId}`;
+      IoC.resolve<Command>('Scope.New', newScopeName).execute();
+
+      const testKey = 'ReturnOne';
+      const result = IoCUtils.tryInScope(newScopeName, () => {
+        IoC.resolve<Command>('IoC.Register', testKey, (): number => 1).execute();
+        return IoC.resolve<number>(testKey) + 1;
+      });
+      expect(result).toEqual(2);
 
       expect(IoC.scopeName).toBe(initScopeName);
       expect(() => IoC.resolve<number>(testKey)).toThrowError(
@@ -35,11 +57,11 @@ describe('IoCUtils', () => {
       IoC.resolve<Command>('Scope.New', newScopeName).execute();
 
       const testKey = 'OneWithError';
-      const errors = IoCUtils.tryInScope(newScopeName, () => {
+      const result = IoCUtils.tryInScope(newScopeName, () => {
         IoC.resolve<Command>('IoC.Register', testKey, (): number => 1).execute();
         throw new Error('ошибка выполнения');
       });
-      expect(errors).toEqual([new Error('ошибка выполнения')]);
+      expect(result).toEqual(new Error('ошибка выполнения'));
 
       expect(IoC.scopeName).toBe(initScopeName);
       expect(() => IoC.resolve<number>(testKey)).toThrowError(
@@ -56,10 +78,10 @@ describe('IoCUtils', () => {
       const newScopeName = `${MathUtils.randomId}`;
 
       const testKey = 'OneWithError';
-      const errors = IoCUtils.tryInScope(newScopeName, () => {
+      const result = IoCUtils.tryInScope(newScopeName, () => {
         IoC.resolve<Command>('IoC.Register', testKey, (): number => 1).execute();
       });
-      expect(errors).toEqual([]);
+      expect(result).toEqual(undefined);
 
       expect(IoC.scopeName).toBe(initScopeName);
       expect(() => IoC.resolve<number>(testKey)).toThrowError(
