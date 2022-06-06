@@ -7,7 +7,7 @@ import { UObject } from '../u-object.model';
 
 export const IoC = new IoCContainer();
 
-IoC.resolve<Command>('IoC.Register', 'Game.CreateGame', (): number => {
+IoC.resolve<Command>('IoC.Register', 'Game.CreateGame', (users?: string[]): number => {
   const gameId = MathUtils.randomId;
   const scopeName = `${gameId}`;
   IoC.resolve<Command>('Scope.New', scopeName).execute();
@@ -19,6 +19,7 @@ IoC.resolve<Command>('IoC.Register', 'Game.CreateGame', (): number => {
     ).execute();
 
     IoC.resolve<Command>('IoC.Register', 'Game.GetObjects', (): GameObjects => ({})).execute();
+    IoC.resolve<Command>('IoC.Register', 'Game.GetUsers', (): string[] => users ?? []).execute();
   });
   return gameId;
 }).execute();
@@ -231,3 +232,21 @@ IoC.resolve<Command>(
     }
   },
 ).execute();
+
+IoC.resolve<Command>('IoC.Register', 'Game.GetUsers', (gameId: number) => {
+  if (!gameId) {
+    throw new Error('для получения пользователей игры необходимо указать айди игры');
+  }
+  if (!IoC.scoupesNames.includes(`${gameId}`)) {
+    throw new Error(`для получения пользователей игры не найдена игра с айди "${gameId}"`);
+  }
+  const result = IoCUtils.tryInScope(`${gameId}`, () => IoC.resolve<string[]>('Game.GetUsers'));
+  if (result instanceof Error) {
+    throw result;
+  } else {
+    if (!result) {
+      throw new Error(`не удалось получить пользователей для игры с айди "${gameId}"`);
+    }
+    return result;
+  }
+}).execute();
