@@ -7,7 +7,10 @@ export class ClientGameService {
   private user: string = 'current user';
   private jwdToken?: string;
 
-  constructor(private authService: AuthorizationService) {}
+  constructor(
+    private authService: AuthorizationService,
+    private messageEndpoint: MessageEndpoint,
+  ) {}
 
   init(): Observable<void> {
     return this.authService.init();
@@ -23,7 +26,7 @@ export class ClientGameService {
       .pipe(tap((token) => (this.jwdToken = token)));
   }
 
-  sendCommandToGame(message: IAgentMessage): void {
+  sendCommandToGame(message: IAgentMessage): Observable<void> {
     if (!this.jwdToken) {
       throw new Error('пользователь не залогинен, нет токена');
     }
@@ -32,6 +35,6 @@ export class ClientGameService {
     parsedArgs['token'] = this.jwdToken;
     message.args = JSON.stringify(parsedArgs);
 
-    MessageEndpoint.addCommandToGame(message);
+    return this.messageEndpoint.addCommandToGameWithJWT(message);
   }
 }

@@ -5,7 +5,11 @@ import { IoC } from './game.ioc';
 import { InterpretCommand } from './interpret.model';
 
 export class MessageEndpoint {
-  static addCommandToGame(message: IAgentMessage): Observable<void> {
+  addCommandToGame(message: IAgentMessage): void {
+    IoC.resolve<void>('Game.AddCommandToQueue', message.gameId, new InterpretCommand(message));
+  }
+
+  addCommandToGameWithJWT(message: IAgentMessage): Observable<void> {
     const { gameId, args } = message;
     const parsedArgs: Record<string, unknown> = args ? JSON.parse(args) : {};
     const jwt = parsedArgs['token'] as string;
