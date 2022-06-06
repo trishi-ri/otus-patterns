@@ -11,13 +11,14 @@ export class InterpretCommand implements Command {
     const { gameId, objectId, commandId, args } = this.message;
 
     const gameObject = IoC.resolve<UObject>('Game.GetObject', gameId, objectId);
-    const parsedArgs: unknown[] = args ? JSON.parse(args) : [];
+    const parsedArgs: Record<string, unknown> = args ? JSON.parse(args) : {};
+    const commandParameters = (parsedArgs['commandParameters'] as unknown[]) ?? [];
     const command = IoC.resolve<Command>(
       'Game.GetCommand',
       gameId,
       commandId,
       gameObject,
-      ...parsedArgs,
+      ...commandParameters,
     );
 
     IoC.resolve<void>('Game.AddCommandToQueue', gameId, command);
