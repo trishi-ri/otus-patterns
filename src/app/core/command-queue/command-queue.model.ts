@@ -1,7 +1,7 @@
 import { BehaviorSubject, Observable, map } from 'rxjs';
 import { Command } from '../command.model';
 
-enum QueueState {
+export enum QueueState {
   init,
   executing,
   executingError,
@@ -65,7 +65,7 @@ export class CommandQueue {
     );
   }
 
-  private executeCommand(command: Command): void {
+  executeCommand(command: Command): void {
     const wasSoftStopState = this.waitingCommands && this.stoppingCommand;
     this.setState(QueueState.executing, command);
     try {
@@ -96,7 +96,7 @@ export class CommandQueue {
     return this.nextCommands.length === 0;
   }
 
-  private setState(state: QueueState, command?: Command, error?: Error): void {
+  protected setState(state: QueueState, command?: Command, error?: Error): void {
     this.status.next({ state, command, error });
   }
 }
