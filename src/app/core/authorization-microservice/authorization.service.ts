@@ -1,4 +1,4 @@
-import { IoC } from '../endpoint/game.ioc';
+import { IoC } from 'src/app/app.config';
 import * as jose from 'jose';
 import { from, map, Observable } from 'rxjs';
 import { Command } from '../command.model';

@@ -1,9 +1,12 @@
+import { IoC } from 'src/app/app.config';
 import { MathUtils } from 'src/app/utils/math.utils';
 import { CommandQueue } from '../command-queue/command-queue.model';
 import { IAgentMessage } from './agent-message.model';
-import { IoC } from './game.ioc';
+import { GameRegisterCommand } from './game.ioc';
 import { InterpretCommand } from './interpret.model';
 import { MessageEndpoint } from './message-endpoint.model';
+
+GameRegisterCommand.execute();
 
 describe('MessageEndpoint', () => {
   let service: MessageEndpoint;

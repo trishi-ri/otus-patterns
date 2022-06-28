@@ -1,8 +1,7 @@
+import { IoC } from 'src/app/app.config';
 import { Command } from '../command.model';
-import { IoCUtils } from '../ioc/ioc.utils';
 import { UObject } from '../u-object.model';
 import { IAgentMessage } from './agent-message.model';
-import { IoC } from './game.ioc';
 
 export class InterpretCommand implements Command {
   constructor(private message: IAgentMessage) {}

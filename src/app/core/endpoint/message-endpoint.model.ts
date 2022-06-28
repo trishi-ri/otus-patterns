@@ -1,7 +1,7 @@
-import { catchError, from, map, Observable } from 'rxjs';
+import { IoC } from 'src/app/app.config';
+import { from, map, Observable } from 'rxjs';
 import * as jose from 'jose';
 import { IAgentMessage } from './agent-message.model';
-import { IoC } from './game.ioc';
 import { InterpretCommand } from './interpret.model';
 
 export class MessageEndpoint {
