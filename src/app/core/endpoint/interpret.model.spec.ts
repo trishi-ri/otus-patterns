@@ -1,12 +1,16 @@
+import { IoC } from 'src/app/app.config';
 import { MathUtils } from 'src/app/utils/math.utils';
 import { CommandQueue } from '../command-queue/command-queue.model';
 import { Command } from '../command.model';
+import { IoCUtils } from '../ioc/ioc.utils';
 import { MoveCommand, Movable } from '../movements/move.model';
 import { UObject } from '../u-object.model';
 import { Vector } from '../vector.model';
 import { IAgentMessage } from './agent-message.model';
-import { IoC } from './game.ioc';
+import { GameRegisterCommand } from './game.ioc';
 import { InterpretCommand } from './interpret.model';
+
+GameRegisterCommand.execute();
 
 describe('InterpretCommand', () => {
   it('выполнение InterpretCommand => создана указанная команда для указанного объекта и поставлена в очередь команд указанной игры', () => {
@@ -43,8 +47,11 @@ describe('InterpretCommand', () => {
       ['waiting'],
     ]);
 
-    const object = IoC.resolve<UObject>('Game.GetObject', gameId, objectId);
-    expect(object.getProperty('Position')).toEqual(new Vector(1, 3));
+    const position = IoCUtils.tryInScope(`${gameId}`, () => {
+      const object = IoC.resolve<UObject>('Game.GetObject', gameId, objectId);
+      return object.getProperty('Position');
+    });
+    expect(position).toEqual(new Vector(1, 3));
   });
 
   function getUObject(): UObject {

@@ -2,11 +2,14 @@ import { catchError, map, Observable, of, switchMap } from 'rxjs';
 import { MathUtils } from 'src/app/utils/math.utils';
 import { CommandQueue } from '../command-queue/command-queue.model';
 import { IAgentMessage } from '../endpoint/agent-message.model';
-import { IoC } from '../endpoint/game.ioc';
+import { IoC } from 'src/app/app.config';
 import { InterpretCommand } from '../endpoint/interpret.model';
 import { MessageEndpoint } from '../endpoint/message-endpoint.model';
 import { AuthorizationService } from './authorization.service';
 import { ClientGameService } from './client-game.service';
+import { GameRegisterCommand } from '../endpoint/game.ioc';
+
+GameRegisterCommand.execute();
 
 describe('ClientGameService', () => {
   let service: ClientGameService;
