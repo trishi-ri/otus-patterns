@@ -5,6 +5,7 @@ import { Command } from '../command.model';
 import { IoCUtils } from '../ioc/ioc.utils';
 import { MacroCommand } from '../macro-command.model';
 import { UObject } from '../u-object.model';
+import { orderMetadataCommand } from './order.model';
 
 type GameCommandKeys = Record<number, string>;
 type GameObjects = Record<number, UObject>;
@@ -23,6 +24,18 @@ export const GameRegisterCommand = new MacroCommand([
 
       IoC.resolve<Command>('IoC.Register', 'Game.GetObjects', (): GameObjects => ({})).execute();
       IoC.resolve<Command>('IoC.Register', 'Game.GetUsers', (): string[] => users ?? []).execute();
+
+      (users ?? []).forEach((user: string) => {
+        const userScopeName = `${gameId}.${user}`;
+        IoC.resolve<Command>('Scope.New', userScopeName).execute();
+        IoCUtils.tryInScope(userScopeName, () => {
+          IoC.resolve<Command>(
+            'IoC.Register',
+            'Game.GetObjects',
+            (): GameObjects => ({}),
+          ).execute();
+        });
+      });
     });
     return gameId;
   }),
@@ -73,25 +86,29 @@ export const GameRegisterCommand = new MacroCommand([
       throw result;
     }
   }),
-  IoC.resolve<Command>('IoC.Register', 'Game.GetObjects', (gameId: number): GameObjects => {
-    if (!gameId) {
-      throw new Error('для получения объектов игры необходимо указать айди игры');
-    }
-    if (!IoC.scoupesNames.includes(`${gameId}`)) {
-      throw new Error(`для получения объектов игры не найдена игра с айди "${gameId}"`);
-    }
-    const result = IoCUtils.tryInScope(`${gameId}`, () =>
-      IoC.resolve<GameObjects>('Game.GetObjects'),
-    );
-    if (result instanceof Error) {
-      throw result;
-    } else {
-      if (!result) {
-        throw new Error(`не удалось получить объекты для игры с айди "${gameId}"`);
+  IoC.resolve<Command>(
+    'IoC.Register',
+    'Game.GetObjects',
+    (gameId: number, user?: string): GameObjects => {
+      if (!gameId) {
+        throw new Error('для получения объектов игры необходимо указать айди игры');
       }
-      return result;
-    }
-  }),
+      if (!IoC.scoupesNames.includes(`${gameId}`)) {
+        throw new Error(`для получения объектов игры не найдена игра с айди "${gameId}"`);
+      }
+      const result = IoCUtils.tryInScope(user ? `${gameId}.${user}` : `${gameId}`, () =>
+        IoC.resolve<GameObjects>('Game.GetObjects'),
+      );
+      if (result instanceof Error) {
+        throw result;
+      } else {
+        if (!result) {
+          throw new Error(`не удалось получить объекты для игры с айди "${gameId}"`);
+        }
+        return result;
+      }
+    },
+  ),
   IoC.resolve<Command>(
     'IoC.Register',
     'Game.AddCommandToQueue',
@@ -115,14 +132,14 @@ export const GameRegisterCommand = new MacroCommand([
   IoC.resolve<Command>(
     'IoC.Register',
     'Game.GetObject',
-    (gameId: number, objectId: number): UObject => {
+    (gameId: number, objectId: number, user?: string): UObject => {
       if (!gameId) {
         throw new Error('для получения объекта игры необходимо указать айди игры');
       }
       if (!IoC.scoupesNames.includes(`${gameId}`)) {
         throw new Error(`для получения объекта игры не найдена игра с айди "${gameId}"`);
       }
-      const result = IoCUtils.tryInScope(`${gameId}`, () => {
+      const result = IoCUtils.tryInScope(user ? `${gameId}.${user}` : `${gameId}`, () => {
         const objects = IoC.resolve<GameObjects>('Game.GetObjects');
         return objects[objectId];
       });
@@ -139,14 +156,14 @@ export const GameRegisterCommand = new MacroCommand([
   IoC.resolve<Command>(
     'IoC.Register',
     'Game.AddObject',
-    (gameId: number, object: UObject): number => {
+    (gameId: number, object: UObject, user?: string): number => {
       if (!gameId) {
         throw new Error('для добавления объекта в игру необходимо указать айди игры');
       }
       if (!IoC.scoupesNames.includes(`${gameId}`)) {
         throw new Error(`для добавления объекта в игру не найдена игра с айди "${gameId}"`);
       }
-      const result = IoCUtils.tryInScope(`${gameId}`, () => {
+      const result = IoCUtils.tryInScope(user ? `${gameId}.${user}` : `${gameId}`, () => {
         const objectId = MathUtils.randomId;
         object.setProperty('id', objectId);
         const objects = IoC.resolve<GameObjects>('Game.GetObjects');
@@ -189,6 +206,31 @@ export const GameRegisterCommand = new MacroCommand([
         if (!result) {
           throw new Error(
             `не удалось получить команду по айди "${commandId}" для игры с айди "${gameId}"`,
+          );
+        }
+        return result;
+      }
+    },
+  ),
+  IoC.resolve<Command>(
+    'IoC.Register',
+    'Game.GetCommandByKey',
+    (gameId: number, commandKey: string, ...args: unknown[]): Command => {
+      if (!gameId) {
+        throw new Error('для получения команды для игры необходимо указать айди игры');
+      }
+      if (!IoC.scoupesNames.includes(`${gameId}`)) {
+        throw new Error(`для получения команды для игры не найдена игра с айди "${gameId}"`);
+      }
+      const result = IoCUtils.tryInScope(`${gameId}`, () =>
+        commandKey ? IoC.resolve<Command>(`Game.GetCommand.${commandKey}`, ...args) : undefined,
+      );
+      if (result instanceof Error) {
+        throw result;
+      } else {
+        if (!result) {
+          throw new Error(
+            `не удалось получить команду по ключу "${commandKey}" для игры с айди "${gameId}"`,
           );
         }
         return result;
@@ -244,4 +286,5 @@ export const GameRegisterCommand = new MacroCommand([
       return result;
     }
   }),
+  orderMetadataCommand,
 ]);
